@@ -1,10 +1,30 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = " Synthetic Network Messenger";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+<div id="messenger">
+    <div id="contacts">
+        <ul>
+            <li id="1" onclick="switchTab(1)">Pappa</li>
+            <li id="2" onclick="switchTab(2)">Lisa</li>
+            <li id="3" onclick="switchTab(3)">Olle</li>
+        </ul>
+    </div>
+    <div id="chat">
+        <div id="header">
+            <img src="~/resources/msnicon.png" alt="Icon" id="header-icon">
+            Synthetic Network Messenger
+        </div>
+        <div id="chat-area1" class="chat-area" style="display:none;"></div>
+        <div id="chat-area2" class="chat-area" style="display:none;"></div>
+        <div id="chat-area3" class="chat-area" style="display:none;"></div>
+        <div id="input-area">
+            <input type="text" id="message-input" placeholder="Type a message...">
+            <button id="send-button" disabled="disabled">Send</button>
+        </div>
+    </div>
 </div>
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
