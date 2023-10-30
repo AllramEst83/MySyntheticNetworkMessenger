@@ -21,10 +21,25 @@
         <div id="chat-area1" class="chat-area" style="display:none;"></div>
         <div id="chat-area2" class="chat-area" style="display:none;"></div>
         <div id="chat-area3" class="chat-area" style="display:none;"></div>
+        
         <div id="input-area">
             <input type="text" id="message-input" placeholder="Type a message...">
             <button id="send-button" disabled="disabled">Send</button>
         </div>
     </div>
+</div>
+
+@* Modal *@
+<!-- Modal or Page HTML -->
+<div id="personality-creator" hidden>
+    <form id="personality-form">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="personality">Personality:</label>
+        <textarea id="personality" name="personality" required></textarea>
+
+        <button type="submit">Save</button>
+    </form>
 </div>
 <script src="~/js/signalr/dist/browser/signalr.js"></script>

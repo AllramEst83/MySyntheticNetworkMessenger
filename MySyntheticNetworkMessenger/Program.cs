@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using MySyntheticNetworkMessenger.Hubs;
 using MySyntheticNetworkMessenger.Models;
 using MySyntheticNetworkMessenger.Services;
@@ -10,7 +11,9 @@ builder.Services.AddSignalR();
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("ApplicationSettings"));
 
-builder.Services.AddTransient<IChatGptService, ChatGptService>();
+builder.Services
+    .AddTransient<IChatGptService, ChatGptService>()
+    .AddSingleton<IChatHistoryService, ChatHistoryService>();
 
 var app = builder.Build();
 

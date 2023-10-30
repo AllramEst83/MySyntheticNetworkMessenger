@@ -61,9 +61,10 @@ function SendMessage() {
 
     var userId = selectedTabId;
 
-    connection.invoke("SendMessage", userId.toString(), message, selectedTabId.toString()).catch(function (err) {
-        return console.error(err.toString());
-    });
+    connection.invoke("SendMessage", userId.toString(), message, selectedTabId.toString())
+        .catch(function (err) {
+            return console.error(err.toString());
+        });
 
     console.log('Sent message to contact with ID:', selectedTabId);
 }
