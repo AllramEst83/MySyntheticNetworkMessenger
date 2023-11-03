@@ -73,8 +73,8 @@ namespace MySyntheticNetworkMessenger.Services
         {
             return contactData.Goofiness switch
             {
-                <= 3 => "Du är inte så knasighet. ",
-                >= 4 => "Du är väldigt knasighet. "
+                <= 3 => "Du är inte så knasig. ",
+                >= 4 => "Du är väldigt knasig. "
             };
         }
 
