@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Options;
-using MySyntheticNetworkMessenger.Hubs;
 using MySyntheticNetworkMessenger.Models;
 using Newtonsoft.Json.Linq;
 using System.Text;
@@ -8,46 +7,38 @@ namespace MySyntheticNetworkMessenger.Services
 {
     public interface IChatGptService
     {
-        Task<string> GetResponseAsync(string message, ContactType contactType, int chatId);
+        Task<string> GetResponseAsync(int chatId);
     }
     public class ChatGptService : IChatGptService
     {
         private readonly AppSettings appSettings;
         private readonly IChatHistoryService chatHistoryService;
+        private readonly IContactService contactService;
+        private readonly ITemplateBuilderService templateBuilderService;
         private readonly HttpClient _httpClient;
 
         public ChatGptService(
             IOptions<AppSettings> appSettings,
-             IChatHistoryService chatHistoryService)
+             IChatHistoryService chatHistoryService,
+             IContactService contactService,
+             ITemplateBuilderService templateBuilderService)
         {
             this.appSettings = appSettings.Value;
             this.chatHistoryService = chatHistoryService;
             _httpClient = new HttpClient();
             _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {this.appSettings.ChatGptSettings.ApiKey}");
-
+            this.contactService = contactService;
+            this.templateBuilderService = templateBuilderService;
         }
 
-        public async Task<string> GetResponseAsync(string message, ContactType contactType, int chatId)
+        public async Task<string> GetResponseAsync(int chatId)
         {
-            string instruction = string.Empty;
-            switch (contactType)
-            {
-                case ContactType.Dada:
-                    instruction = "Alla svar ska vara på språket Svenska (SE-sv). Svara som att du är 87 år och pratar med din son. Håll det kort och enkelt.";
-                    break;
-                case ContactType.Lisa:
-                    instruction = "Alla svar ska vara på språket Svenska (SE-sv). Svara som att du är 15 årig tjej från 1990 talet. Du pratar med din bästis. Undvika för långa svar.";
-                    break;
-                case ContactType.Olle:
-                    instruction = "Alla svar ska vara på språket Svenska (SE-sv). Svara som att du är en 40 årig pappa och att du svarar en annan pappa du varit vän med länge.Undvika för långa svar.";
-                    break;
-                default:
-                    break;
-            }
+            var contact = contactService.GetContact(chatId);
+            string instructionTemplate = templateBuilderService.BuildInstructionTemplate(contact);           
 
             var messagesList = new List<object>
             {
-                new { role = "system", content = instruction }
+                new { role = "system", content = instructionTemplate }
             };
 
             var chatHistory = chatHistoryService.GetChatMessages(chatId);

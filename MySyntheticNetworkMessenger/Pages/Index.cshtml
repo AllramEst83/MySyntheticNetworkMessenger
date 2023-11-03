@@ -7,10 +7,10 @@
 
 <div id="messenger">
     <div id="contacts">
+        <div class="contacts-header">
+            <button id="add-contact-button">+</button>
+        </div>
         <ul>
-            <li id="1" onclick="switchTab(1)">Pappa</li>
-            <li id="2" onclick="switchTab(2)">Lisa</li>
-            <li id="3" onclick="switchTab(3)">Olle</li>
         </ul>
     </div>
     <div id="chat">
@@ -18,28 +18,113 @@
             <img src="~/resources/msnicon.png" alt="Icon" id="header-icon">
             Synthetic Network Messenger
         </div>
-        <div id="chat-area1" class="chat-area" style="display:none;"></div>
-        <div id="chat-area2" class="chat-area" style="display:none;"></div>
-        <div id="chat-area3" class="chat-area" style="display:none;"></div>
-        
+
         <div id="input-area">
             <input type="text" id="message-input" placeholder="Type a message...">
-            <button id="send-button" disabled="disabled">Send</button>
+            <button id="send-button" disabled>Send</button>
         </div>
     </div>
 </div>
 
 @* Modal *@
-<!-- Modal or Page HTML -->
-<div id="personality-creator" hidden>
-    <form id="personality-form">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
+<!-- Modal -->
+<div class="modal fade" id="personalityModal" tabindex="-1" role="dialog" aria-labelledby="personalityModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="personalityModalLabel">Create Personality</h5>
+            </div>
+            <div class="modal-body">
 
-        <label for="personality">Personality:</label>
-        <textarea id="personality" name="personality" required></textarea>
+                <form id="personality-form">
 
-        <button type="submit">Save</button>
-    </form>
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Man/Kvinna:</label>
+                        <div>
+                            <input type="radio" id="man" name="mankvinna" value="Man" required>
+                            <label for="man">Man</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="kvinna" name="mankvinna" value="Kvinna" required>
+                            <label for="kvinna">Kvinna</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="age">Age (10-99):</label>
+                        <input type="number" id="age" name="age" min="10" max="99">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="era-select">Era:</label>
+                        <select id="era-select" name="era" required>
+                            <option id="0" value="0">None</option>
+                            <option id="6" value="6">50s</option>
+                            <option id="5" value="5">60s</option>
+                            <option id="4" value="4">70s</option>
+                            <option id="3" value="3">80s</option>
+                            <option id="2" value="2">90s</option>
+                            <option id="1" value="1">00s</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="politeness">Politeness:</label>
+                        <input type="range" id="politeness" name="politeness" min="0" max="5" list="tickmarks" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="formality">Formality:</label>
+                        <input type="range" id="formality" name="formality" min="0" max="5" list="tickmarks" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="humor">Humor:</label>
+                        <input type="range" id="humor" name="humor" min="0" max="5" list="tickmarks" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confidence">Confidence:</label>
+                        <input type="range" id="confidence" name="confidence" min="0" max="5" list="tickmarks" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="goofiness">Goofiness:</label>
+                        <input type="range" id="goofiness" name="goofiness" min="0" max="5" list="tickmarks" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="shortanswers">Answers lenght:</label>
+                        <input type="range" id="shortanswers" name="shortanswers" min="0" max="5" list="tickmarks" required>
+                    </div>
+
+                    <datalist id="tickmarks">
+                        <option value="0"></option>
+                        <option value="1"></option>
+                        <option value="2"></option>
+                        <option value="3"></option>
+                        <option value="4"></option>
+                        <option value="5"></option>
+                    </datalist>
+
+                    <button type="button" class="btn btn-secondary" id="close-button">Close</button>
+                    <button type="submit" class="btn btn-primary" id="save-button">Save</button>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <div style="text-align:center;">
+                    Synthetic Friend Machines
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
+
 <script src="~/js/signalr/dist/browser/signalr.js"></script>

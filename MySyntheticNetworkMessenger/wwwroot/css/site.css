@@ -51,9 +51,7 @@ body {
     height: 100%;
 }
 
-#chat-area1,
-#chat-area2,
-#chat-area3 {
+.chat-area {
     display: flex;
     flex-direction: column;
     height: 350px;
@@ -64,9 +62,6 @@ body {
     border-top: 1px solid #aaa;
     border-bottom: 1px solid #aaa;
 }
-/* Other existing styles remain unchanged */
-
-
 
 #header {
     display: flex;
@@ -96,6 +91,7 @@ body {
     padding: 10px;
     border-radius: 10px;
     margin-bottom: 10px;
+    align-self: flex-start;
 }
 #chat-area {
     display: flex;
@@ -110,7 +106,7 @@ body {
 }
 
 .message.sent {
-    float: right;
+    align-self: flex-end;
     clear: both; /* Ensures each message appears on a new line */
     background-color: #00a2ed;
     color: #fff;
@@ -154,3 +150,50 @@ body {
         border: 1px solid #aaa; /* Gray border */
     }
 
+.contacts-header {
+    background-color: #ddd;
+    padding: 0px;
+    text-align: right; /* Aligns the button to the right */
+}
+
+#add-contact-button {
+    background-color: #ddd;
+    border: none;
+    color: #00a2ed;
+    font-size: 24px; /* Adjusts the size of the plus sign */
+    cursor: pointer;
+}
+
+    #add-contact-button:focus {
+        outline: none;
+    }
+
+
+
+#personality-form .form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+#personality-form label {
+    width: 100px;
+    margin-right: 10px;
+}
+
+#personality-form input[type="range"] {
+    flex-grow: 1;
+}
+
+#personality-form button {
+    background-color: #00a2ed;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    float:right;
+    margin-right:10px;
+}
+
+    

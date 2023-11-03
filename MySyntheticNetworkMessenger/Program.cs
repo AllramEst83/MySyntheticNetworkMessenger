@@ -13,7 +13,9 @@ builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("Applic
 
 builder.Services
     .AddTransient<IChatGptService, ChatGptService>()
-    .AddSingleton<IChatHistoryService, ChatHistoryService>();
+    .AddSingleton<IChatHistoryService, ChatHistoryService>()
+    .AddSingleton<IContactService, ContactService>()
+    .AddSingleton<ITemplateBuilderService, TemplateBuilderService>();
 
 var app = builder.Build();
 

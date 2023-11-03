@@ -1,85 +1,179 @@
 ﻿"use strict";
 
-var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
-var selectedTabId = 1;
+//Some jQuery mixed in with the vanilla JS. Not ideal, But wanted the ease of useing the bootstrap & jQuery Modal for the form.
+$(document).ready(function () {
 
-//Disable the send button until connection is established.
-document.getElementById("send-button").disabled = true;
+    var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+    var selectedTabId = null
 
-connection.on("ReceiveMessage", function (user, message, tabId) {
-    var chatArea = document.getElementById('chat-area' + tabId);
+    //Disable the send button until connection is established.
+    document.getElementById("send-button").disabled = true;
 
-    var messageDiv = document.createElement("div");
-    messageDiv.className = "message received";
-    messageDiv.textContent = message;
+    connection.on("ReceiveMessage", function (user, message, tabId) {
+        var chatArea = document.getElementById('chat-area' + tabId);
 
-    chatArea.appendChild(messageDiv);
-    chatArea.scrollTop = chatArea.scrollHeight;
-});
+        var messageDiv = document.createElement("div");
+        messageDiv.className = "message received";
+        messageDiv.textContent = message;
+
+        chatArea.appendChild(messageDiv);
+        chatArea.scrollTop = chatArea.scrollHeight;
+    });
 
 
-connection.start().then(function () {
+    connection.start().then(function () {
 
 
-    switchTab(selectedTabId)
-}).catch(function (err) {
-    return console.error(err.toString());
-});
+        switchTab(selectedTabId)
+    }).catch(function (err) {
+        return console.error(err.toString());
+    });
 
-document.addEventListener('keydown', function (event) {
-    if (event.key === 'Enter') {
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
 
-        SendMessage()
+            SendMessage()
+        }
+    });
+
+
+    document.getElementById("send-button").addEventListener("click", function (event) {
+        event.preventDefault();
+
+        SendMessage();
+    });
+
+    function SendMessage() {
+        if (!selectedTabId) {
+            console.error('No contact selected');
+            return;
+        }
+
+        var message = document.getElementById('message-input').value;
+        var chatArea = document.getElementById('chat-area' + selectedTabId);
+
+        var messageDiv = document.createElement("div");
+
+        messageDiv.className = "message sent";
+        messageDiv.textContent = message;
+
+        chatArea.appendChild(messageDiv);
+        chatArea.scrollTop = chatArea.scrollHeight;
+
+        document.getElementById('message-input').value = "";
+
+        var userId = selectedTabId;
+
+        connection.invoke("SendMessage", userId.toString(), message, selectedTabId.toString())
+            .catch(function (err) {
+                return console.error(err.toString());
+            });
+
+        console.log('Sent message to contact with ID:', selectedTabId);
     }
-});
+
+    $('#contacts ul').on('click', 'li', function () {
+        var tabId = $(this).attr('id');
+        switchTab(tabId);
+    });
 
 
-document.getElementById("send-button").addEventListener("click", function (event) {
-    event.preventDefault();
+    function switchTab(tabId) {
+        // Remove 'selected' class from all tabs
+        $('#contacts ul li').removeClass('selected');
 
-    SendMessage();
-});
+        // Add 'selected' class to the current tab
+        $('#' + tabId).addClass('selected');
 
-function SendMessage() {
-    if (!selectedTabId) {
-        console.error('No contact selected');
-        return;
+        // Hide all chat areas
+        $('.chat-area').hide();
+
+        // Show the current chat area
+        $('#chat-area' + tabId).show();
+
+        // Update the selectedTabId variable
+        selectedTabId = tabId;
     }
 
-    var message = document.getElementById('message-input').value;
-    var chatArea = document.getElementById('chat-area' + selectedTabId);
 
-    var messageDiv = document.createElement("div");
+    $('#message-input').on('input', function () {
+        var messageLength = $(this).val().length;
+        var messagesExist = $('#chat-area' + selectedTabId).children('.message').length > 0;
+        var inputNotEmpty = messageLength > 1;
 
-    messageDiv.className = "message sent";
-    messageDiv.textContent = message;
+        // Enable send button only if a tab is selected and
+        // (there are messages and input is not empty) or there are no messages.
+        var enableButton = selectedTabId !== null && ((messagesExist && inputNotEmpty) || !messagesExist);
 
-    chatArea.appendChild(messageDiv);
-    chatArea.scrollTop = chatArea.scrollHeight;
+        $("#send-button").prop('disabled', !enableButton);
+    });
 
-    document.getElementById('message-input').value = "";
 
-    var userId = selectedTabId;
+    $('#add-contact-button').click(function () {
+        $('#personalityModal').modal('show');
+    });
 
-    connection.invoke("SendMessage", userId.toString(), message, selectedTabId.toString())
-        .catch(function (err) {
-            return console.error(err.toString());
+    $('#close-button').click(function () {
+        $('#personalityModal').modal('hide');
+    });
+
+
+    function generateNextChatId() {
+
+        var chatAreas = $('[id^="chat-area"]');
+        var maxId = 0;
+
+        // Loop through each chat area and determine the highest ID
+        chatAreas.each(function () {
+            var id = parseInt(this.id.replace('chat-area', ''), 10);
+            if (id > maxId) {
+                maxId = id;
+            }
         });
 
-    console.log('Sent message to contact with ID:', selectedTabId);
-}
+        return maxId + 1;
+    }
+    $('#personality-form').submit(function (event) {
+        event.preventDefault();
 
+        var nextChatId = generateNextChatId();
 
-function switchTab(tabId) {
-    var chats = document.querySelectorAll('.chat-area');
-    chats.forEach(chat => chat.style.display = 'none');
+        var formData = {
+            chatId: nextChatId,
+            name: $('#name').val(),
+            manKvinna: $('#mankvinna').prop('checked'),
+            era: parseInt($('#era-select').find(':selected').val(), 10),
+            age: parseInt($('#age').val(), 10),
+            politeness: parseInt($('#politeness').val(), 10),
+            formality: parseInt($('#formality').val(), 10),
+            humor: parseInt($('#humor').val(), 10),
+            confidence: parseInt($('#confidence').val(), 10),
+            goofiness: parseInt($('#goofiness').val(), 10),
+            shortAnswers: parseInt($('#shortanswers').val(), 10)
+        };
 
-    var contacts = document.querySelectorAll('#contacts li');
-    contacts.forEach(contact => contact.classList.remove('selected'));
+        connection.invoke("AddContact", formData)
+            .catch(function (err) {
 
-    document.getElementById('chat-area' + tabId).style.display = 'block';
-    document.getElementById(tabId).classList.add('selected');
+                return console.error(err.toString());
+            });
 
-    selectedTabId = tabId;
-    document.getElementById("send-button").disabled = false;
-}
+        var newContactTab = $('<li></li>')
+            .attr('id', nextChatId)
+            .text(formData.name)
+            .on('click', function () { switchTab(nextChatId); })
+            .appendTo('#contacts ul');
+
+        var newChatArea = $('<div></div>')
+            .attr('id', 'chat-area' + nextChatId)
+            .addClass('chat-area')
+            .css('display', 'none')
+            .insertBefore('#input-area');
+
+        this.reset();
+
+        $('#personalityModal').modal('hide');
+        switchTab(nextChatId);
+    });
+});
+
