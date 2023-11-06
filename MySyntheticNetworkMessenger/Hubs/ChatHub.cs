@@ -31,7 +31,7 @@ namespace MySyntheticNetworkMessenger.Hubs
             this.contactService = contactService;
         }
 
-        public async Task SendMessage(string user, string message, string tabId)
+        public async Task SendMessage(string user, string message, int tabId)
         {
             string chatMessage = string.Empty;
             if (!string.IsNullOrEmpty(user) && !string.IsNullOrEmpty(message))
@@ -43,8 +43,10 @@ namespace MySyntheticNetworkMessenger.Hubs
                     chatMessage = await chatGptService.GetResponseAsync(userInt);
 
                     chatHistoryService.AddChatMessage(chatMessage, userInt, MessageType.Received);
+
+                    chatHistoryService.ReCalculateHistoryLength(tabId);
                 }
-             
+
                 await Clients.All.SendAsync("ReceiveMessage", user, chatMessage, tabId);
             }
         }

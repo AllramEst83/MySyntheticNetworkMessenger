@@ -64,7 +64,7 @@ $(document).ready(function () {
 
         var userId = selectedTabId;
 
-        connection.invoke("SendMessage", userId.toString(), message, selectedTabId.toString())
+        connection.invoke("SendMessage", userId.toString(), message, selectedTabId)
             .catch(function (err) {
                 return console.error(err.toString());
             });

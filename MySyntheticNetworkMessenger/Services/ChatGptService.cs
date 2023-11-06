@@ -34,11 +34,15 @@ namespace MySyntheticNetworkMessenger.Services
         public async Task<string> GetResponseAsync(int chatId)
         {
             var contact = contactService.GetContact(chatId);
-            string instructionTemplate = templateBuilderService.BuildInstructionTemplate(contact);           
+            if (contact != null && string.IsNullOrEmpty(contact.InstructionTemplate))
+            {
+                contact.InstructionTemplate = templateBuilderService.BuildInstructionTemplate(contact);
+                contactService.AddOrUpdateContact(contact);
+            }
 
             var messagesList = new List<object>
             {
-                new { role = "system", content = instructionTemplate }
+                new { role = "system", content = contact?.InstructionTemplate }
             };
 
             var chatHistory = chatHistoryService.GetChatMessages(chatId);
