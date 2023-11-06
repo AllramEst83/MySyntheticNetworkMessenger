@@ -1,25 +1,22 @@
 ﻿"use strict";
 
-//Some jQuery mixed in with the vanilla JS. Not ideal, But wanted the ease of useing the bootstrap & jQuery Modal for the form.
 $(document).ready(function () {
 
     var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
     var selectedTabId = null
 
     //Disable the send button until connection is established.
-    document.getElementById("send-button").disabled = true;
+    $("#send-button").prop('disabled', true);
 
     connection.on("ReceiveMessage", function (user, message, tabId) {
-        var chatArea = document.getElementById('chat-area' + tabId);
 
-        var messageDiv = document.createElement("div");
-        messageDiv.className = "message received";
-        messageDiv.textContent = message;
+        var chatArea = $('#chat-area' + tabId);
+        var messageDiv = $('<div></div>').addClass('message received').text(message);
 
-        chatArea.appendChild(messageDiv);
-        chatArea.scrollTop = chatArea.scrollHeight;
+        chatArea.append(messageDiv);
+        chatArea.scrollTop(chatArea.prop('scrollHeight'));
+
     });
-
 
     connection.start().then(function () {
 
@@ -29,17 +26,14 @@ $(document).ready(function () {
         return console.error(err.toString());
     });
 
-    document.addEventListener('keydown', function (event) {
+    $('#message-input').on('keydown', function (event) {
         if (event.key === 'Enter') {
-
-            SendMessage()
+            SendMessage();
         }
     });
 
-
-    document.getElementById("send-button").addEventListener("click", function (event) {
+    $("#send-button").on("click", function (event) {
         event.preventDefault();
-
         SendMessage();
     });
 
@@ -49,18 +43,16 @@ $(document).ready(function () {
             return;
         }
 
-        var message = document.getElementById('message-input').value;
-        var chatArea = document.getElementById('chat-area' + selectedTabId);
+        var message = $('#message-input').val();
+        var chatArea = $('#chat-area' + selectedTabId);
 
-        var messageDiv = document.createElement("div");
+        var messageDiv = $('<div></div>').addClass('message sent').text(message);
 
-        messageDiv.className = "message sent";
-        messageDiv.textContent = message;
+        chatArea.append(messageDiv);
+        chatArea.scrollTop(chatArea.prop('scrollHeight'));
 
-        chatArea.appendChild(messageDiv);
-        chatArea.scrollTop = chatArea.scrollHeight;
+        $('#message-input').val('');
 
-        document.getElementById('message-input').value = "";
 
         var userId = selectedTabId;
 
@@ -69,7 +61,6 @@ $(document).ready(function () {
                 return console.error(err.toString());
             });
 
-        console.log('Sent message to contact with ID:', selectedTabId);
     }
 
     $('#contacts ul').on('click', 'li', function () {
@@ -77,37 +68,25 @@ $(document).ready(function () {
         switchTab(tabId);
     });
 
-
     function switchTab(tabId) {
-        // Remove 'selected' class from all tabs
+
         $('#contacts ul li').removeClass('selected');
-
-        // Add 'selected' class to the current tab
         $('#' + tabId).addClass('selected');
-
-        // Hide all chat areas
         $('.chat-area').hide();
-
-        // Show the current chat area
         $('#chat-area' + tabId).show();
 
-        // Update the selectedTabId variable
         selectedTabId = tabId;
     }
-
 
     $('#message-input').on('input', function () {
         var messageLength = $(this).val().length;
         var messagesExist = $('#chat-area' + selectedTabId).children('.message').length > 0;
         var inputNotEmpty = messageLength > 1;
 
-        // Enable send button only if a tab is selected and
-        // (there are messages and input is not empty) or there are no messages.
         var enableButton = selectedTabId !== null && ((messagesExist && inputNotEmpty) || !messagesExist);
 
         $("#send-button").prop('disabled', !enableButton);
     });
-
 
     $('#add-contact-button').click(function () {
         $('#personalityModal').modal('show');
@@ -117,13 +96,11 @@ $(document).ready(function () {
         $('#personalityModal').modal('hide');
     });
 
-
     function generateNextChatId() {
 
         var chatAreas = $('[id^="chat-area"]');
         var maxId = 0;
 
-        // Loop through each chat area and determine the highest ID
         chatAreas.each(function () {
             var id = parseInt(this.id.replace('chat-area', ''), 10);
             if (id > maxId) {
@@ -133,6 +110,7 @@ $(document).ready(function () {
 
         return maxId + 1;
     }
+
     $('#personality-form').submit(function (event) {
         event.preventDefault();
 
