@@ -20,7 +20,6 @@ This application is intended to demonstrate how you can dynamically create chatb
 - **SignalR:** Used for real-time web functionality, allowing server-side code to send asynchronous notifications to client-side web applications.
 - **Bootstrap & jQuery:** Utilized for modals, forms, and event handling to enhance user experience and simplify DOM manipulations.
 - **.NET 7:** The backend is built using .NET 6, providing a robust framework for building high-performance web applications.
-- **Entity Framework Core:** Acts as an ORM for .NET for data access.
 - **C#:** The primary programming language for the server-side logic.
 
 ## Development Environment Setup
