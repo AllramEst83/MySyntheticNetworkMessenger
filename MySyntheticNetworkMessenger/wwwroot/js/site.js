@@ -20,8 +20,7 @@ $(document).ready(function () {
 
     connection.start().then(function () {
 
-
-        switchTab(selectedTabId)
+        CreateDefaultUser();
     }).catch(function (err) {
         return console.error(err.toString());
     });
@@ -58,7 +57,7 @@ $(document).ready(function () {
 
         connection.invoke("SendMessage", userId.toString(), message, selectedTabId)
             .catch(function (err) {
-                return console.error(err.toString());
+                return console.error(err);
             });
 
     }
@@ -69,6 +68,8 @@ $(document).ready(function () {
     });
 
     function switchTab(tabId) {
+
+        tabId = parseInt(tabId, 10); 
 
         $('#contacts ul li').removeClass('selected');
         $('#' + tabId).addClass('selected');
@@ -109,6 +110,45 @@ $(document).ready(function () {
         });
 
         return maxId + 1;
+    }
+
+    function CreateDefaultUser() {
+
+        var nextChatId = generateNextChatId();
+
+        var formData = {
+            chatId: nextChatId,
+            name: 'Farfar Urban',
+            manKvinna: true,
+            era: 6,
+            age: 68,
+            politeness: 3,
+            formality: 1,
+            humor: 5,
+            confidence: 3,
+            goofiness: 5,
+            shortAnswers: 3
+        };
+
+        connection.invoke("AddContact", formData)
+            .catch(function (err) {
+
+                return console.error(err.toString());
+            });
+
+        var newContactTab = $('<li></li>')
+            .attr('id', nextChatId)
+            .text(formData.name)
+            .on('click', function () { switchTab(nextChatId); })
+            .appendTo('#contacts ul');
+
+        var newChatArea = $('<div></div>')
+            .attr('id', 'chat-area' + nextChatId)
+            .addClass('chat-area')
+            .css('display', 'none')
+            .insertBefore('#input-area');
+
+        switchTab(nextChatId);
     }
 
     $('#personality-form').submit(function (event) {
@@ -153,5 +193,7 @@ $(document).ready(function () {
         $('#personalityModal').modal('hide');
         switchTab(nextChatId);
     });
+
+
 });
 

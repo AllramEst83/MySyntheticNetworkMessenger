@@ -196,4 +196,79 @@ body {
     margin-right:10px;
 }
 
-    
+
+/* Existing styles... */
+
+/* Media Queries for Mobile Devices */
+@media screen and (max-width: 768px) {
+    #messenger {
+        flex-direction: column;
+        width: 100%; /* Full width on mobile */
+        height: auto; /* Auto height for flexible content */
+        margin: 0; /* Remove margin */
+    }
+
+    #contacts, #chat {
+        width: 100%; /* Full width for both contacts and chat */
+    }
+
+    #chat {
+        flex-direction: column;
+        height: auto; /* Auto height */
+    }
+
+    #input-area, #message-input, #send-button {
+        width: 100%; /* Full width for input area and its children */
+    }
+
+    #message-input {
+        width: calc(100% - 40px); /* Increase width for message input */
+    }
+
+    #message-input {
+        padding: 10px; /* Increase padding for easier typing */
+        font-size: 16px; /* Larger font for readability */
+    }
+
+    .message {
+        max-width: 90%; /* Increase max-width for better readability */
+    }
+
+    /* Adjust font sizes and button sizes for better readability and touch */
+    body, button, input, select {
+        font-size: 16px; /* Slightly larger font size */
+    }
+
+    #add-contact-button {
+        font-size: 28px; /* Larger plus sign */
+    }
+
+    #personality-form label {
+        width: auto; /* Adjust label width */
+        margin-bottom: 5px; /* Add margin for stacked label-input on mobile */
+    }
+
+    #personality-form .form-group {
+        flex-direction: column; /* Stack label and input */
+    }
+
+    #personality-form input[type="range"] {
+        width: 100%; /* Full width for range inputs */
+    }
+
+    #send-button {
+        width: 40px; /* Smaller width for send button */
+        padding: 5px; /* Adjust padding to maintain button alignment */
+        font-size: 12px; /* Smaller font size for text in the button */
+    }
+
+    .footer .container {
+        padding: 10px; /* Adjust padding for smaller screens */
+        text-align: center; /* Center align text for better appearance on mobile */
+    }
+
+    /* Ensure text wraps within the container */
+    .footer {
+        word-wrap: break-word; /* Breaks words to prevent overflow */
+    }
+}
