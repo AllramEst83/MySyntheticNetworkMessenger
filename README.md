@@ -1,5 +1,5 @@
 # MySyntheticNetworkMessenger
-Fake ChatGpt powered messenging service.
+Fake messenging service powered by ChatGpt.
 
 ## Overview
 
